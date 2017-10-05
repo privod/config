@@ -16,11 +16,13 @@ class TestConf(Conf):
 class ConfTestCase(TestCase):
     def test_conf(self):
 
-        conf = Conf()
+        conf = TestConf()
         conf._conf['param1'] = 222
 
-        conf2 = Conf()
+        conf2 = TestConf()
 
-        print(conf2.get('param1'))
+        conf3 = TestConf({'param1': 333})
+
+        print(conf3.get('param1'))
 
 
