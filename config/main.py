@@ -13,6 +13,7 @@ class Conf(object):
         if cls.instance is None:
             cls.instance = super(Conf, cls).__new__(cls)
             cls.instance._conf = {}
+            cls.instance.file_created = False
             cls.instance.init()
         return cls.instance
 
@@ -25,7 +26,7 @@ class Conf(object):
         self._conf.update(self.init_default(self.__class__))
 
         # Значения из конфигурационного файла, более высокий приоритет
-        self._conf.update(self.init_load(self.__class__))
+        self._conf.update(self.init_load())
         # Новые пареметры по умочанию добавляются в конфигурационный файл
         with open(self.__class__.file_name, 'w') as f:
             json.dump(self._conf, f, indent=2, sort_keys=True)
@@ -37,14 +38,14 @@ class Conf(object):
     def init_default(cls):
         return {key: val for key, val, comment in cls.default}
 
-    @staticmethod
-    def init_load(cls):
+    def init_load(self):
+        cls = self.__class__
         conf_load = {}
         try:
             with open(cls.file_name) as f:
                 conf_load = json.loads(f.read())
         except FileNotFoundError:
-            pass
+            self.file_created = True
         except ValueError:
             os.rename(cls.file_name, cls.file_name_bad)
         return conf_load
