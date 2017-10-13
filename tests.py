@@ -1,6 +1,5 @@
 from unittest import TestCase
-from datetime import datetime
-from project.main import Conf
+from config import Conf
 
 
 class TestConf(Conf):
