@@ -7,7 +7,13 @@ class Conf(object):
     instance = None
     file_name = 'default.cfg'
     file_name_bad = file_name + '.bad'
-    default = []
+    default = [
+        # Пример заполнения
+        # (None, 'param1', 101, 'Первый параметр, целое число'),
+        # (1, 'param2', '../path/file', 'Второй параметрб текстовый'),
+        # (3, 'param3', ['name@server.com', 'name2@server.com'], 'Треттий параметр, список'),
+        # (None, 'param4', {'a': 3, 'f': 55, 'd': 23}, 'Четвертый параметр, словарь'),
+    ]
 
     def __new__(cls, conf_arg={}):
         if cls.instance is None:
@@ -36,7 +42,7 @@ class Conf(object):
 
     @staticmethod
     def init_default(cls):
-        return {key: val for key, val, comment in cls.default}
+        return {key: val for index, key, val, comment in cls.default}
 
     def init_load(self):
         cls = self.__class__
@@ -52,8 +58,13 @@ class Conf(object):
 
     @staticmethod
     def init_sys(cls):
-        # TODO Есть идея добавить в список default поле, по которому сопостовлять какой параметр будет заменяться значением из командной строки
-        return {key: arg for (key, val, comment), arg in zip(cls.default, sys.argv[1:])}
+        conf_sys = {}
+
+        for index, key, val, comment in cls.default:
+            if index is not None and index < len(sys.argv):
+                conf_sys[key] = sys.argv[index]
+
+        return conf_sys
 
     def get(self, key):
         return self._conf.get(key)
