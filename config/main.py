@@ -52,7 +52,8 @@ class Conf(object):
 
     @staticmethod
     def init_sys(cls):
-        return {key: arg for (key, val, comment), arg in zip(cls.default, sys.argv)}
+        # TODO Есть идея добавить в список default поле, по которому сопостовлять какой параметр будет заменяться значением из командной строки
+        return {key: arg for (key, val, comment), arg in zip(cls.default, sys.argv[1:])}
 
     def get(self, key):
         return self._conf.get(key)
